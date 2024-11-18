@@ -1,5 +1,7 @@
 server:
   port: 8087
+  servLet:
+    context-path: '/ead-authuser/'
 
 spring:
   datasource:
