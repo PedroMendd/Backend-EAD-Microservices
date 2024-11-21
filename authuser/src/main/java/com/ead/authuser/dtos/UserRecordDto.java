@@ -6,34 +6,34 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UserRecordDto(
-                            @NotBlank(message = "Username is mandatory")
-                            @Size(min = 4, max = 50, message = "Size must be between 4 and 50")
+                            @NotBlank(groups = UserView.RegistrationPost.class, message = "Username is mandatory")
+                            @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class ,message = "Size must be between 4 and 50")
                             @JsonView(UserView.RegistrationPost.class)
                             String username,
 
-                            @NotBlank(message = "Email is mandatory")
-                            @Email(message = "Email must be in the expected format")
+                            @NotBlank(groups = UserView.RegistrationPost.class, message = "Email is mandatory")
+                            @Email(groups = UserView.RegistrationPost.class, message = "Email must be in the expected format")
                             @JsonView(UserView.RegistrationPost.class)
                             String email,
 
-                            @NotBlank(message = "Password is mandatory")
-                            @Size(min = 6, max = 20, message = "Size must be between 6 and 20")
+                            @NotBlank(groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class}, message = "Password is mandatory")
+                            @Size(min = 6, max = 20, groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class}, message = "Size must be between 6 and 20")
                             @JsonView({UserView.RegistrationPost.class, UserView.PasswordPut.class})
                             String password,
 
-                            @NotBlank(message = "Old password is mandatory")
-                            @Size(min = 6, max = 20, message = "Size must be between 6 and 20")
+                            @NotBlank(groups = UserView.PasswordPut.class, message = "Old password is mandatory")
+                            @Size(min = 6, max = 20, groups = UserView.PasswordPut.class, message = "Size must be between 6 and 20")
                             @JsonView(UserView.PasswordPut.class)
                             String oldPassword,
 
-                            @NotBlank(message = "Full Name is mandatory")
+                            @NotBlank(groups = {UserView.RegistrationPost.class, UserView.UserPut.class}, message = "Full Name is mandatory")
                             @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
                             String fullName,
 
                             @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
                             String phoneNumber,
 
-                            @NotBlank(message = "Image URL is mandatory")
+                            @NotBlank(groups = UserView.ImagePut.class, message = "Image URL is mandatory")
                             @JsonView(UserView.ImagePut.class)
                             String imageUrl) {
 
