@@ -27,8 +27,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserModel>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
-                                                           Pageable pageable){
+    public ResponseEntity<Page<UserModel>> getAllUsers(Pageable pageable){
 
         Page<UserModel> userModelPage = userService.findAll(pageable);
 
