@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -29,6 +32,12 @@ public class UserController {
     public ResponseEntity<Page<UserModel>> getAllUsers(SpecificationTemplate.UserSpec spec, Pageable pageable){
 
         Page<UserModel> userModelPage = userService.findAll(spec, pageable);
+
+        if (!userModelPage.isEmpty()){
+            for (UserModel user : userModelPage.toList()) {
+                user.add(linkTo(methodOn(UserController.class).getOneUser(user.getUserId())).withSelfRel());
+            }
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
