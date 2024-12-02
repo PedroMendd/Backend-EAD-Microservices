@@ -17,8 +17,7 @@ public interface ModuleRepository extends JpaRepository<ModuleModel, UUID> {
 //    @EntityGraph(attributePaths = {"course"})
 //    ModuleModel findyByTitle(String title);
 
-//    @Modifying
-//    @Query(value ="delete * from tb_modules where course_course_id = :courseId", nativeQuery = true)
-//    List<ModuleModel> findAllModulesIntoCourse(@Param("courseId") UUID courseId);
+    @Query(value ="select * from tb_modules where course_course_id = :courseId", nativeQuery = true)
+    List<ModuleModel> findAllModulesIntoCourse(@Param("courseId") UUID courseId);
 
 }
