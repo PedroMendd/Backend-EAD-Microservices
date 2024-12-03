@@ -1,14 +1,16 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dtos.CourseRecordDto;
+import com.ead.course.models.CourseModel;
 import com.ead.course.services.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
@@ -29,6 +31,29 @@ public class CourseController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.save(courseRecordDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CourseModel>> getAllCourses(){
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.findAll());
+    }
+
+    @GetMapping(path = "/{courseId}")
+    public ResponseEntity<Object> getOneCourse(@PathVariable(value = "courseId")UUID courseId){
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.findById(courseId).get());
+    }
+
+    @DeleteMapping(path = "/{courseId}")
+    public ResponseEntity<Object> deleteCourse(@PathVariable(value = "courseId")UUID courseId){
+        courseService.delete(courseService.findById(courseId).get());
+        return ResponseEntity.status(HttpStatus.OK).body("Course deleted successfully.");
+    }
+
+    @PutMapping(path = "/{courseId}")
+    public ResponseEntity<Object> updateCourse(@PathVariable(value = "courseId")UUID courseId,
+                                               @RequestBody @Valid CourseRecordDto courseRecordDto){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(courseService.update(courseRecordDto, courseService.findById(courseId).get()));
     }
 
 }
