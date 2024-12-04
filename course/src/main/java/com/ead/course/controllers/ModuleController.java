@@ -43,7 +43,7 @@ public class ModuleController {
     public ResponseEntity<Object> getOneModule(@PathVariable(value = "courseId")UUID courseId,
                                                @PathVariable(value = "moduleId")UUID moduleId){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(moduleService.findModuleIntoCourse(courseId, moduleId));
+                .body(moduleService.findModuleIntoCourse(courseId, moduleId).get());
     }
 
     @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
