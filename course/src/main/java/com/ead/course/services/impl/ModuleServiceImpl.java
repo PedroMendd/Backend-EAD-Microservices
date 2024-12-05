@@ -10,6 +10,9 @@ import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.ModuleService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -79,5 +82,10 @@ public class ModuleServiceImpl implements ModuleService {
         }
 
         return moduleModelOptional;
+    }
+
+    @Override
+    public Page<ModuleModel> findAllModulesIntoCourse(Specification<ModuleModel> spec, Pageable pageable) {
+        return moduleRepository.findAll(spec, pageable);
     }
 }
