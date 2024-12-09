@@ -1,7 +1,7 @@
-package com.ead.authuser.clients;
+package com.ead.course.clients;
 
-import com.ead.authuser.dtos.CourseRecordDto;
-import com.ead.authuser.dtos.ResponsePageDto;
+import com.ead.course.dtos.ResponsePageDto;
+import com.ead.course.dtos.UserRecordDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,22 +13,22 @@ import org.springframework.web.client.RestClientException;
 
 import java.util.UUID;
 
-@Component
 @Log4j2
-public class CourseClient {
+@Component
+public class AuthUserClient {
 
-    @Value("${ead.api.url.course}")
-    String baseUrlCourse;
+    @Value("${ead.api.url.authuser}")
+    String baseUrlAuthuser;
 
     final RestClient restClient;
 
-    public CourseClient(RestClient.Builder restClientBuilder) {
+    public AuthUserClient(RestClient.Builder restClientBuilder) {
         this.restClient = restClientBuilder.build();
     }
 
-    public Page<CourseRecordDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
+    public Page<UserRecordDto> getAllUsersByCourse(UUID courseId, Pageable pageable) {
 
-        String url = baseUrlCourse + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size="
+        String url = baseUrlAuthuser + "/users?courseId=" + courseId + "&page=" + pageable.getPageNumber() + "&size="
                 + pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
         log.debug("Request URL: {}", url);
 
@@ -37,14 +37,11 @@ public class CourseClient {
             return restClient.get()
                     .uri(url)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<ResponsePageDto<CourseRecordDto>>() {
-                    });
+                    .body(new ParameterizedTypeReference<ResponsePageDto<UserRecordDto>>() {});
 
         } catch (RestClientException e) {
-            log.error("Error Request RestClient with cause: {}", e.getMessage());
-            throw new RuntimeException("Error Request RestClient", e);
+            throw new RuntimeException("Error Request RestCLient", e);
         }
-
     }
 
 }
