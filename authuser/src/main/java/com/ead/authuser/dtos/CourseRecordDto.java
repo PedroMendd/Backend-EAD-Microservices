@@ -10,7 +10,7 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record CourseRecordDto
-        (UUID courseId,
+        (                     UUID courseId,
                               String name,
                               String description,
                               String imageUrl,
