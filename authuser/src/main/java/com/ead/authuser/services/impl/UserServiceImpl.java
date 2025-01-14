@@ -4,7 +4,9 @@ import com.ead.authuser.dtos.UserRecordDto;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.NotFoundException;
+import com.ead.authuser.models.UserCourseModel;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specifications.SpecificationTemplate;
@@ -15,6 +17,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -24,8 +28,13 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    final UserRepository userRepository;
+    final UserCourseRepository userCourseRepository;
+
+    public UserServiceImpl(UserRepository userRepository, UserCourseRepository userCourseRepository) {
+        this.userRepository = userRepository;
+        this.userCourseRepository = userCourseRepository;
+    }
 
     @Override
     public Optional<UserModel> findById(UUID userId){
@@ -36,9 +45,17 @@ public class UserServiceImpl implements UserService {
         return userModelOptional;
     }
 
+    @Transactional
     @Override
     public void delete(UserModel userModel) {
+
+        List<UserCourseModel> userCourseModelList = userCourseRepository.findAllUserCourseIntoUser(userModel.getUserId());
+        if (!userCourseModelList.isEmpty()){
+            userCourseRepository.deleteAll(userCourseModelList);
+        }
+
         userRepository.delete(userModel);
+
     }
 
     @Override
