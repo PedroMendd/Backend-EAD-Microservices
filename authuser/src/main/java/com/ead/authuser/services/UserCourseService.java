@@ -12,4 +12,7 @@ public interface UserCourseService {
 
     UserCourseModel save(UserCourseModel userCourseModel);
 
+    boolean existsByCourseId(UUID courseId);
+
+    void deleteAllByCourseId(UUID courseId);
 }
