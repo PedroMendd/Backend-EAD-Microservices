@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: ead-service-registry
-
+  output:
+    ansi:
+      enabled: Always
 
 eureka:
   client:
