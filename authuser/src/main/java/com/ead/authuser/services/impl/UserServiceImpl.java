@@ -2,10 +2,12 @@ package com.ead.authuser.services.impl;
 
 import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.dtos.UserRecordDto;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.NotFoundException;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,10 +28,12 @@ public class UserServiceImpl implements UserService {
 
     final UserRepository userRepository;
     final CourseClient courseClient;
+    final UserEventPublisher userEventPublisher;
 
-    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient) {
+    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient, UserEventPublisher userEventPublisher) {
         this.userRepository = userRepository;
         this.courseClient = courseClient;
+        this.userEventPublisher = userEventPublisher;
     }
 
     @Override
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(userModel);
     }
 
+    @Transactional
     @Override
     public UserModel registerUser(UserRecordDto userRecordDto) {
         var userModel = new UserModel();
@@ -55,7 +61,11 @@ public class UserServiceImpl implements UserService {
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return userRepository.save(userModel);
+        userRepository.save(userModel);
+
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(ActionType.CREATE));
+
+        return userModel;
     }
 
     @Override
