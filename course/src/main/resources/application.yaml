@@ -19,6 +19,8 @@ spring:
         jdbc:
           lob:
             non-contextual-creation: true
+  rabbitmq:
+    addresses: amqps://bfumdmet:WmIyAVCHS6BZkuWfgrbH23WA5n5o0dGW@beaver.rmq.cloudamqp.com/bfumdmet
   output:
     ansi:
       enabled: Always
