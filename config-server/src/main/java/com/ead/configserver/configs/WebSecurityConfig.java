@@ -1,4 +1,4 @@
-package com.ead.serviceregistry.configs;
+package com.ead.configserver.configs;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +19,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    @Value("${ead.serviceRegistry.username}")
+    @Value("${ead.configServer.username}")
     private String username;
 
-    @Value("${ead.serviceRegistry.password}")
+    @Value("${ead.configServer.password}")
     private String password;
 
     @Bean
@@ -30,7 +30,7 @@ public class WebSecurityConfig {
 
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                .anyRequest().authenticated())
+                        .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
