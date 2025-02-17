@@ -4,6 +4,9 @@ import jakarta.servlet.DispatcherType;
 import jakarta.ws.rs.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -31,7 +34,9 @@ public class WebSecurityConfig {
     final JwtProvider jwtProvider;
     final AccessDeniedHandlerImpl accessDeniedHandler;
 
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthenticationEntryPointImpl authenticationEntryPoint, JwtProvider jwtProvider, AccessDeniedHandlerImpl accessDeniedHandler) {
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService
+            , AuthenticationEntryPointImpl authenticationEntryPoint
+            , JwtProvider jwtProvider, AccessDeniedHandlerImpl accessDeniedHandler) {
         this.userDetailsService = userDetailsService;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.jwtProvider = jwtProvider;
@@ -41,6 +46,19 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationJwtFilter authenticationJwtFilter() {
         return new AuthenticationJwtFilter(jwtProvider, userDetailsService);
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        String hierarchy = "ROLE_ADMIN > ROLE_INSTRUCTOR \n ROLE_INSTRUCTOR > ROLE_STUDENT \n ROLE_STUDENT > ROLE_USER";
+        return RoleHierarchyImpl.fromHierarchy(hierarchy);
+    }
+
+    @Bean
+    private DefaultMethodSecurityExpressionHandler expressionHandler() {
+        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy());
+        return expressionHandler;
     }
 
     @Bean
