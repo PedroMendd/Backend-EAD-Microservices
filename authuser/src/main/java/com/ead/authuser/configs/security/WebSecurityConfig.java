@@ -1,7 +1,6 @@
 package com.ead.authuser.configs.security;
 
 import jakarta.servlet.DispatcherType;
-import jakarta.ws.rs.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -55,7 +54,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    private DefaultMethodSecurityExpressionHandler expressionHandler() {
+    public DefaultMethodSecurityExpressionHandler expressionHandler() {
         var expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
