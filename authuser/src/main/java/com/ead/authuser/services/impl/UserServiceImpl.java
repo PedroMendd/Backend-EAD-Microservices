@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel updatePassword(UserRecordDto userRecordDto, UserModel userModel) {
 
-        userModel.setPassword(userRecordDto.password());
+        userModel.setPassword(passwordEncoder.encode(userRecordDto.password()));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         return userRepository.save(userModel);
@@ -138,9 +138,27 @@ public class UserServiceImpl implements UserService {
 
         userModel.setUserType(UserType.INSTRUCTOR);
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.getRoles().add(roleService.findByRoleName(RoleType.ROLE_INSTRUCTOR));
         userRepository.save(userModel);
         userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(ActionType.UPDATE));
         return userModel;
 
     }
+
+    @Transactional
+    @Override
+    public UserModel registerUserAdmin(UserRecordDto userRecordDto) {
+        var userModel = new UserModel();
+        BeanUtils.copyProperties(userRecordDto, userModel);
+        userModel.setUserStatus(UserStatus.ACTIVE);
+        userModel.setUserType(UserType.ADMIN);
+        userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        userModel.getRoles().add(roleService.findByRoleName(RoleType.ROLE_ADMIN));
+        userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(ActionType.CREATE));
+        return userModel;
+    }
+
 }

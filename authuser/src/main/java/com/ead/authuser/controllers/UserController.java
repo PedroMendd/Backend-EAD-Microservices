@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +30,12 @@ public class UserController {
 
     final UserService userService;
     final AuthenticationCurrentUserService authenticationCurrentUserService;
+    final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, AuthenticationCurrentUserService authenticationCurrentUserService) {
+    public UserController(UserService userService, AuthenticationCurrentUserService authenticationCurrentUserService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationCurrentUserService = authenticationCurrentUserService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -88,7 +91,7 @@ public class UserController {
                                                  UserRecordDto userRecordDto){
         log.debug("PUT updatePassword userId received {}", userId);
         Optional<UserModel> userModelOptional = userService.findById(userId);
-        if (!userModelOptional.get().getPassword().equals(userRecordDto.oldPassword())) {
+        if (!passwordEncoder.matches(userRecordDto.oldPassword(), userModelOptional.get().getPassword())) {
             log.warn("Mismatched old password! userId {}", userId);
             return ResponseEntity.status((HttpStatus.CONFLICT)).body("Error: Mismatched old password!");
         }

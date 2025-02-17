@@ -61,6 +61,18 @@ public class AuthenticationController {
                 .body(new JwtRecordDto(jwt));
     }
 
+     //Exemplo de endpoint para adicionar ADMINs
+//    @PostMapping("/signup/admin/usr")
+//    public ResponseEntity<Object> registerUserAdmin(@RequestBody @Validated(UserRecordDto.UserView.RegistrationPost.class)
+//                                                    @JsonView(UserRecordDto.UserView.RegistrationPost.class) UserRecordDto userRecordDto,
+//                                                    Errors errors){
+//        userValidator.validate(userRecordDto, errors);
+//        if (errors.hasErrors()){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.getAllErrors());
+//        }
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUserAdmin(userRecordDto));
+//    }
+
 //    @GetMapping("/logs")
 //    public String index(){
 //        log.trace("TRACE");
