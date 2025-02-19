@@ -1,31 +1,8 @@
-server:
-  port: 8888
-
 spring:
+  profile:
+    active: prod
   application:
     name: ead-config-server
   output:
     ansi:
       enabled: Always
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/PedroMendd/ead-config-server-repo
-          username: PedroMendd
-          password: ${GIT_PASSWORD}
-
-ead:
-  configServer:
-    username: configserver
-    password: 'ead123cs'
-  serviceRegistry:
-    username: serviceregistry
-    password: 'ead123sr'
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: 'http://${ead.serviceRegistry.username}:${ead.serviceRegistry.password}@localhost:8761/eureka'
-  instance:
-    hostname: localhost

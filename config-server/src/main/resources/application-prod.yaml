@@ -1,0 +1,27 @@
+server:
+  port: ${PORT}
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/PedroMendd/ead-config-server-repo
+          username: ${GIT_USERNAME}
+          password: ${GIT_PASSWORD}
+
+encrypt:
+  key: ixRVDaXsZ43/iYk8NfE0vC5K9a8F6kOgv8os4lUNP1u8ichjbYM4BoJHpbb9fR2Cc2uPqO8BcKUxFfWcQnPq96/LQBQMJz9MMPP7pfJEInM=
+
+ead:
+  configServer:
+    username: ${CONFIG_SERVER_USERNAME}
+    password: ${CONFIG_SERVER_PASSWORD}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
+  instance:
+    hostname: ${APP_DOMAIN_NAME}
+    non-secure-port: 80
